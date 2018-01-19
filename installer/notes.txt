@@ -1,0 +1,47 @@
+PowerShell scripts to simplify working with Gawati
+==================================================
+
+Give permission to run scripts.
+
+each time you open a PowerShell::
+
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+
+
+Prepare your system
+-------------------
+
+This installs all tools needed to allow you to work with Gawati running on your
+local machine using virtualisation technology.
+It asks you if you wish to install the optional development tools too.
+
+needed only once::
+
+  setup_tools.ps1
+
+
+Install minimal CentOS image
+----------------------------
+
+The Gawati installer relies on a minimal install of CentOS to install Gawati.
+This script downloads a disk image and deploys it into VirtualBox. This image
+is used as the basis from which the Gawati server will be cloned.
+ 
+needed only once::
+
+  deploy_gawati_os.ps1
+
+
+Deploy Gawati into virtual machine
+----------------------------------
+
+Clones the minimal CentOS image registered in the previous step and installs
+Gawati into it.
+
+run once per installation::
+
+  gawati_devsetup.ps1
+
+In the KiTTY window, select the top left terminal icon, and choose "Change settings...".
+In the KiTTY Reconfiguration window, choose Terminal and activate "Implicit CR in every LF".
+Confirm using the "Apply" button.

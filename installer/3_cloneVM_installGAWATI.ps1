@@ -1,6 +1,6 @@
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 
-$InstallScript="gawati_devsetup.sh"
+$InstallScript="scripts\gawati_devsetup.sh"
 
 $BOXNAME="Gawati"
 $SNAPNAME=$BOXNAME + "_Snap"
@@ -29,7 +29,7 @@ VBoxManage startvm $TESTNAME --type headless
 Import-Module Posh-SSH
 #Get-Command -Module Posh-SSH
 
-#kitty -pw MyGawatiLocal -ssh root@my.gawati.local -m scripts\gawati_devsetup.sh -log $LOG
+#kitty -pw MyGawatiLocal -ssh root@my.gawati.local -m $InstallScript -log $LOG
 #cmd /c start powershell -Command "& { Get-Content -Path $LOG -Wait }"
 
 WaitForVM
@@ -43,7 +43,7 @@ $SSHlog = ""
 
 $SSHsession = New-SSHSession -ComputerName $GAWATIHOST -Credential $SSHcred -Force
 
-Set-SCPFile -ComputerName $GAWATIHOST -Credential $SSHcred -LocalFile "gawati_devsetup.sh" -RemotePath "/root/" -Force
+Set-SCPFile -ComputerName $GAWATIHOST -Credential $SSHcred -LocalFile $InstallScript -RemotePath "/root/" -Force
 
 $SSHresult = Invoke-SSHCommand -SSHSession $SSHsession -Timeout 10 -Command 'touch /var/log/setup.log'
 kitty -pw MyGawatiLocal -ssh root@my.gawati.local -log $LOG -cmd 'tail -f /var/log/setup.log'

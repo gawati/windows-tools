@@ -3,7 +3,7 @@
 $CSV = (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/gawati/setup-scripts/master/gawati/citools/scripts.csv')
 $Files = $CSV | ConvertFrom-Csv -Delim ','
 
-$ScriptRoot = $PSScriptRoot + '\scripts\'
+$ScriptRoot = $PSScriptRoot + '\'
 New-Item -ItemType Directory -Force -Path $ScriptRoot
 
 $Files | ForEach {

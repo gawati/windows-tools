@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     def packageFile = readJSON file: 'package.json'
-                    sh "zip -r - . > $DLD/$PKF-${packageFile.version}.zip"
+                    sh "zip -r - . -x .git Jenkinsfile package.json > $DLD/$PKF-${packageFile.version}.zip"
                     sh "[ -L $DLD/$PKF-latest.zip ] && rm -f $DLD/$PKF-latest.zip ; exit 0"
                     sh "[ -e $DLD/$PKF-latest.zip ] || ln -s $PKF-${packageFile.version}.zip $DLD/$PKF-latest.zip"
                 }

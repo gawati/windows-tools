@@ -1,17 +1,6 @@
 pipeline {
     agent any
 
-//  define {
-//      def COLOR_MAP = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', 'ABORTED': 'danger']
-//      def STATUS_MAP = ['SUCCESS': 'success', 'FAILURE': 'failed', 'UNSTABLE': 'failed', 'ABORTED': 'failed']
-//  }
-
-    environment { 
-        // CI="false"
-        DLD="/var/www/html/dl.gawati.org/dev"
-        PKF="windows-tools"
-    } 
-
     stages {
         stage('Prerun Diag') {
             steps {
@@ -31,10 +20,13 @@ pipeline {
         stage('Upload') {
             steps {
                 script {
-                    def packageFile = readJSON file: 'package.json'
-                    sh "zip -r - . -x@pkgexclude.txt > $DLD/$PKF-${packageFile.version}.zip"
-                    sh "[ -L $DLD/$PKF-latest.zip ] && rm -f $DLD/$PKF-latest.zip ; exit 0"
-                    sh "[ -e $DLD/$PKF-latest.zip ] || ln -s $PKF-${packageFile.version}.zip $DLD/$PKF-latest.zip"
+                    sh """
+wget -qO- http://dl.gawati.org/dev/jenkinslib-latest.tbz | tar -xvjf -
+. ./jenkinslib.sh
+cd installer
+PkgPack
+PkgLinkRoot
+"""
                 }
             }
         }
@@ -45,17 +37,5 @@ pipeline {
         }        
     }
 
-    post {
-        always {
-//          slackSend (color: COLOR_MAP[currentBuild.currentResult], message: "${currentBuild.currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-            slackSend (message: "${currentBuild.currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-        }
-        failure {
-            slackSend (channel: '#failure', message: "${currentBuild.currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-        }
-        unstable {
-            slackSend (channel: '#failure', message: "${currentBuild.currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-        }
-    }
 }
 
